@@ -70,6 +70,7 @@ class GameViewModel(val database:HorseBetDao, application: Application) : Androi
         h2Ratio.value = 2.0
         h3Ratio.value = 2.0
         h4Ratio.value = 2.0
+        balance.value=10000.0
 
         var h1 = h1Ratio.value?.let { Horse("H1", it) }
         var h2 = h2Ratio.value?.let { Horse("H2", it) }
