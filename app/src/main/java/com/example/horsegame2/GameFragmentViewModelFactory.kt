@@ -26,14 +26,14 @@ import com.example.horsegame.database.HorseBetDao
 
 
 
-class GameFragmentViewModelFactory (
+class GameFragmentViewModelFactory(
     private val dataSource: HorseBetDao,
     private val application: Application
 ) : ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(GameViewModel::class.java)) {
-            return GameViewModel(dataSource ,application) as T
+            return GameViewModel(dataSource, application) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

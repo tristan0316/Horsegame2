@@ -10,59 +10,38 @@ import androidx.lifecycle.ViewModel
 import com.example.horsegame.database.AppDatabase
 import com.example.horsegame.database.HorseBetDao
 import com.example.horsegame.utils.Game
+import com.example.horsegame2.utils.Horse
 import java.text.DecimalFormat
 
 
 class GameViewModel(val database:HorseBetDao, application: Application) : AndroidViewModel(application){
 
+    //horse ratio
     var h1Ratio = MutableLiveData<Double>()
     var h2Ratio = MutableLiveData<Double>()
     var h3Ratio = MutableLiveData<Double>()
     var h4Ratio = MutableLiveData<Double>()
+
+    //current balance
     var balance = MutableLiveData<Double>()
+
+    //exchange rate
+    var exrate = MutableLiveData<Double>()
+
+    //bet amount
+    var betmoney: Int? = null
+
+    //bet horse
+    var bethorsename: String? = null
+
+    //balance change
+    var earn: Int? = 0
+
+
 
     lateinit var game1: Game
 
 
-    inner class Horse(horsename: String = "", hRatio: Double) : Thread() {
-        var ratio: Double = hRatio
-        var mile: Int = 0
-        var len: Long = 0
-        var horsename: String = ""
-
-        init {
-            this.ratio = 2.0
-            this.horsename = horsename
-            println("Introducing:" + this.horsename)
-        }
-
-
-        fun win() = if (this.ratio - 0.1 >= 2) {
-            this.ratio = this.ratio - 0.1
-        } else {
-        }
-
-        fun lose() = if (this.ratio + 0.1 <= 5) {
-            this.ratio = this.ratio + 0.1
-        } else {
-        }
-
-        override fun run() {
-            this.mile = 0
-            this.len = 0
-
-            var start: Long = System.currentTimeMillis()
-            while (mile < 20) {
-                sleep((0..1000).random().toLong())
-                mile++
-                println("${horsename} ran ${mile} kms")
-
-            }
-            len = System.currentTimeMillis()
-            len = len - start
-            println("${horsename} finished in ${len} seconds")
-        }
-    }
 
 
     init {

@@ -2,14 +2,18 @@ package com.example.horsegame.utils
 
 import com.example.horsegame2.GameFragment
 import com.example.horsegame2.GameViewModel
+import com.example.horsegame2.utils.Horse
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
-class Game constructor(var horse1: GameViewModel.Horse, var horse2: GameViewModel.Horse, var horse3: GameViewModel.Horse, var horse4:GameViewModel.Horse){
-    var h1 :GameViewModel.Horse = horse1
-    var h2 :GameViewModel.Horse = horse2
-    var h3 :GameViewModel.Horse = horse3
-    var h4 :GameViewModel.Horse = horse4
-    var horses: List<GameViewModel.Horse> = listOf(h1,h2,h3,h4)
+class Game constructor(var horse1: Horse, var horse2: Horse, var horse3: Horse, var horse4:Horse){
+    var h1 :Horse = horse1
+    var h2 :Horse = horse2
+    var h3 :Horse = horse3
+    var h4 :Horse = horse4
+    var horses: List<Horse> = listOf(h1,h2,h3,h4)
 
     init{
         this.h1=horse1
@@ -26,18 +30,32 @@ class Game constructor(var horse1: GameViewModel.Horse, var horse2: GameViewMode
     }
 
     fun race() {
-        h1.start()
-        h2.start()
-        h3.start()
-        h4.start()
-        h1.join()
-        h2.join()
-        h3.join()
-        h4.join()
-        winner()
+
+        CoroutineScope(Dispatchers.Main).launch {
+
+
+            //Four horses run concurrently
+            val job1 = CoroutineScope(Dispatchers.IO).launch {
+                h1.run()
+            }
+            val job2 = CoroutineScope(Dispatchers.IO).launch {
+                h2.run()
+            }
+            val job3 = CoroutineScope(Dispatchers.IO).launch {
+                h3.run()
+            }
+            val job4 = CoroutineScope(Dispatchers.IO).launch {
+                h4.run()
+            }
+            job1.join()
+            job2.join()
+            job3.join()
+            job4.join()
+        }
+        adjustrate()
     }
 
-    fun winner() {
+    fun adjustrate() {
 
         horses= horses.sortedBy { it.len }
         println(horses.get(0).horsename+" wins, taking " + horses.get(0).len+" seconds")
@@ -46,10 +64,6 @@ class Game constructor(var horse1: GameViewModel.Horse, var horse2: GameViewMode
         horses.get(2).lose()
         horses.get(3).lose()
 
-        println(horses.get(0).horsename+" ratio : " + horses.get(0).ratio)
-        println(horses.get(1).horsename+" ratio : " + horses.get(1).ratio)
-        println(horses.get(2).horsename+" ratio : " + horses.get(2).ratio)
-        println(horses.get(3).horsename+" ratio : " + horses.get(3).ratio)
     }
 
 

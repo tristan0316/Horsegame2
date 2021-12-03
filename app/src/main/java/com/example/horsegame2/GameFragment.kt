@@ -25,8 +25,8 @@ private const val ARG_PARAM2 = "param2"
  */
 class GameFragment : Fragment() {
 
-    lateinit var viewModel: GameViewModel
-    lateinit var binding: FragmentGameBinding
+    private lateinit var binding: FragmentGameBinding
+    private lateinit var viewModel: GameViewModel
 
 
     override fun onCreateView(
@@ -34,15 +34,27 @@ class GameFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View?
     {
+
+        // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate<FragmentGameBinding>(
             inflater,
-            R.layout.fragment_game, container, false
-        )
-        
+            R.layout.fragment_game,
+            container,
+            false
+            )
 
+        //Get the activity's application
         val application = requireNotNull(this.activity).application
+
+
+        //Get the database's Dao by this application
         val dataSource = AppDatabase.getInstance(application).horseBetDao
+
+        // Create an instance of the ViewModel Factory
         val viewModelFactory = GameFragmentViewModelFactory(dataSource, application)
+
+        // Get a reference to the ViewModel associated with this fragment.
+        viewModel = ViewModelProvider(this, viewModelFactory).get(GameViewModel::class.java)
 
 
         binding.btnStartRace.setOnClickListener {
