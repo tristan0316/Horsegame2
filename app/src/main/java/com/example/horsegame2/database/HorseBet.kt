@@ -5,25 +5,19 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-class HorseBet {
+data class HorseBet (
     @PrimaryKey(autoGenerate = true)
-    var id = 0
-
-    @ColumnInfo(name = "playerName")
-    var playerName = ""
-
-    @ColumnInfo(name = "result")
-    var result = ""
+    var id: Int = 0,
 
     @ColumnInfo(name = "winHorse")
-    var winHorse = ""
+    var winHorse: String = "",
 
     @ColumnInfo(name = "betHorse")
-    var betHorse = ""
+    var betHorse: String = "",
 
-    @ColumnInfo(name = "remainingAmt")
-    var remainingAmt = 0.0
+    @ColumnInfo(name = "balance")
+    var remainingAmt: Double = 0.0,
 
-    @ColumnInfo(name = "priceAmt")
-    var priceAmt = 0.0
-}
+    @ColumnInfo(name = "betmoney")
+    var priceAmt:  Double = 0.0
+)

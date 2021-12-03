@@ -1,6 +1,7 @@
 package com.example.horsegame2
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,9 +10,11 @@ import android.widget.RadioButton
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import com.example.horsegame.database.AppDatabase
 import com.example.horsegame.utils.Game
 import com.example.horsegame2.databinding.FragmentGameBinding
+import java.lang.Exception
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -58,18 +61,38 @@ class GameFragment : Fragment() {
 
 
         binding.btnStartRace.setOnClickListener {
+
+            try {
+                viewModel.betmoney = binding.etBet.text.toString().trim().toInt().toDouble()
+                val RadioB1 = binding.radioGroup
+                val RadioBtm: RadioButton = binding.root.findViewById(RadioB1.getCheckedRadioButtonId())
+                viewModel.bethorsename = RadioBtm.text.toString()
+
+            }catch (e: Exception){
+                Log.i("Game", "Please insert the money and choose one horse")
+            }
           viewModel.startGame()
+
+        }
+
+        //reset button listener
+        binding.resetbtn.setOnClickListener {
+            viewModel.reset()
+        }
+
+        binding.btnHistory.setOnClickListener {
+            view?.findNavController()?.navigate(R.id.action_gameFragment_to_betHistoryFragment)
         }
 
 
         viewModel.h1Ratio.observe(viewLifecycleOwner, Observer { newScore ->
-            binding.tvH1Ratio.text = newScore.toString() })
+            binding.tvH1Ratio.text = String.format("%.1f", newScore) })
         viewModel.h2Ratio.observe(viewLifecycleOwner, Observer { newScore ->
-            binding.tvH2Ratio.text = newScore.toString() })
+            binding.tvH2Ratio.text =  String.format("%.1f", newScore) })
         viewModel.h3Ratio.observe(viewLifecycleOwner, Observer { newScore ->
-            binding.tvH3Ratio.text = newScore.toString() })
+            binding.tvH3Ratio.text =  String.format("%.1f", newScore) })
         viewModel.h4Ratio.observe(viewLifecycleOwner, Observer { newScore ->
-            binding.tvH4Ratio.text = newScore.toString() })
+            binding.tvH4Ratio.text =  String.format("%.1f", newScore) })
         viewModel.balance.observe(viewLifecycleOwner, Observer { newScore ->
             binding.tvRemains.text = newScore.toString() })
 
