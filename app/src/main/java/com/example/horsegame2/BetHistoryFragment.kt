@@ -6,44 +6,58 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.horsegame.database.AppDatabase
+import com.example.horsegame.database.HorseBet
 import com.example.horsegame2.databinding.FragmentBetHistoryBinding
-import com.example.horsegame2.databinding.FragmentGameBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [BetHistoryFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class BetHistoryFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    private lateinit var viewModel: HistoryViewModel
     private lateinit var binding: FragmentBetHistoryBinding
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(HistoryViewModel::class.java)
-    }
-
+    private lateinit var datalist: List<HorseBet>
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-            binding = DataBindingUtil.inflate<FragmentBetHistoryBinding>(
+
+
+        //Get all data
+        lateinit var datalist: MutableList<HorseBet>
+        val application = requireNotNull(this.activity).application
+        val database = AppDatabase.getInstance(application).horseBetDao
+
+        CoroutineScope(Dispatchers.Main).launch {
+            var job1 = CoroutineScope(Dispatchers.IO).launch {
+                datalist = database.getAll()
+            }
+            job1.join()
+            binding.recyclerview.adapter = HistoryRecordAdapter(datalist, database, application)
+        }
+
+        // Inflate the layout for this fragment
+        binding = DataBindingUtil.inflate(
             inflater,
-            R.layout.fragment_bet_history, container, false
+            R.layout.fragment_bet_history,
+            container,
+            false
         )
 
-        return null
+        //New a recyclerview's layoutManager as LinearLayoutManager
+        val layoutManager = LinearLayoutManager(this.activity)
+        layoutManager.orientation = LinearLayoutManager.VERTICAL
+
+
+        //Set recyclerview's layoutManager and adapter
+        binding.recyclerview.layoutManager = layoutManager
+
+
+
+
+        return binding.root
     }
 }
 

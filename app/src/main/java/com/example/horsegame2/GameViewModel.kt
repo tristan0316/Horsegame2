@@ -16,6 +16,9 @@ import com.example.horsegame2.utils.Horse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.text.DecimalFormat
 
 
@@ -30,9 +33,6 @@ class GameViewModel(val database:HorseBetDao, application: Application) : Androi
     //current balance
     var balance = MutableLiveData<Double>()
 
-    //exchange rate
-    var exrate = MutableLiveData<Double>()
-
     //bet amount
     var betmoney: Double = 10.0
 
@@ -44,6 +44,9 @@ class GameViewModel(val database:HorseBetDao, application: Application) : Androi
 
     // dataID
     var dataid =0
+
+    //exchange rate
+    var exrate = MutableLiveData<Double>()
 
 
 
@@ -66,8 +69,8 @@ class GameViewModel(val database:HorseBetDao, application: Application) : Androi
 
         game1 = Game(this, h1!!, h2!!, h3!!, h4!!)
 
-
     }
+
 
     fun startGame() {
         game1.race()
@@ -92,9 +95,15 @@ class GameViewModel(val database:HorseBetDao, application: Application) : Androi
 
    fun calculate_result(){
        if( bethorsename.equals(game1.win_horse().horsename)){
-           balance.value= betmoney?.times(game1.win_horse().ratio)?.let { balance.value?.plus(it) }
+
+           //balance.value= balance.value?.plus(betmoney*game1.win_horse().ratio* exrate.value!!)
+
+
+          balance.value= betmoney?.times(game1.win_horse().ratio)?.let { balance.value?.plus(it) }
        }
        else{
+
+          // balance.value= balance.value?.minus(betmoney* exrate.value!!)
            balance.value= betmoney?.let { balance.value?.minus(it) }
        }
    }

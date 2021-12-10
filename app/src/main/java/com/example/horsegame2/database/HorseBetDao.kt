@@ -7,7 +7,7 @@ import com.example.horsegame2.utils.Horse
 interface HorseBetDao {
 
     @Query("SELECT * FROM horsebet")
-    suspend fun getAll(): List<HorseBet>
+    suspend fun getAll(): MutableList<HorseBet>
 
     @Query("INSERT OR REPLACE INTO horsebet(id, winHorse, betHorse, balance,betmoney) VALUES(:id, :winHorse,:betHorse, :balance, :betmoney)")
     suspend fun insertData(id:Int, winHorse:String, betHorse:String, balance:Double,betmoney:Double)

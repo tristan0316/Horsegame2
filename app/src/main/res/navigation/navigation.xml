@@ -18,5 +18,5 @@
         android:id="@+id/betHistoryFragment"
         android:name="com.example.horsegame2.BetHistoryFragment"
         android:label="fragment_bet_history"
-        tools:layout="@layout/fragment_bet_history" />
+        tools:layout="@layout/fragment_bet_history" /><action android:id="@+id/action_global_betHistoryFragment" app:destination="@id/betHistoryFragment"/>
 </navigation>
