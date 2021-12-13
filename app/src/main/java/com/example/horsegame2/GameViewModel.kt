@@ -28,10 +28,11 @@ class GameViewModel(val database:HorseBetDao, application: Application) : Androi
 
 
 
-    var progress1 = MutableLiveData<Int>()
-    var progress2 = MutableLiveData<Int>()
-    var progress3 = MutableLiveData<Int>()
-    var progress4 = MutableLiveData<Int>()
+    //Mile of each horse
+    var miles_h1 = MutableLiveData<Int>()
+    var miles_h2 = MutableLiveData<Int>()
+    var miles_h3 = MutableLiveData<Int>()
+    var miles_h4 = MutableLiveData<Int>()
 
 
     //horse ratio
@@ -108,7 +109,15 @@ class GameViewModel(val database:HorseBetDao, application: Application) : Androi
 
 
     fun startGame() {
-        game1.race()
+
+        if(betmoney == null || betmoney!! > 10){
+            Toast.makeText(this.getApplication(), "Please insert the correct bet", Toast.LENGTH_SHORT).show()
+            return
+        }
+        else {
+
+            game1.race()
+        }
     }
 
     override fun GameEnd() {
@@ -155,10 +164,10 @@ class GameViewModel(val database:HorseBetDao, application: Application) : Androi
         h4Ratio.value = 2.0
         balance.value=10000.0
 
-        var h1 = h1Ratio.value?.let { Horse("H1", it) }
-        var h2 = h2Ratio.value?.let { Horse("H2", it) }
-        var h3 = h3Ratio.value?.let { Horse("H3", it) }
-        var h4 = h4Ratio.value?.let { Horse("H4", it) }
+         var h1 = h1Ratio.value?.let { Horse("H1", it) }!!
+         var h2 = h2Ratio.value?.let { Horse("H2", it) }!!
+         var h3 = h3Ratio.value?.let { Horse("H3", it) }!!
+         var h4 = h4Ratio.value?.let { Horse("H4", it) }!!
 
         game1 = Game(this, h1!!, h2!!, h3!!, h4!!)
     }
@@ -171,4 +180,6 @@ class GameViewModel(val database:HorseBetDao, application: Application) : Androi
         }
         this.dataid++
     }
+
+
 }

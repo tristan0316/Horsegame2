@@ -85,6 +85,23 @@ class GameFragment : Fragment() {
         }
 
 
+        viewModel.game1.h1.milesLivedata.observe(viewLifecycleOwner, Observer { newMiles ->
+            binding.progressBar1.progress = newMiles
+        })
+
+        viewModel.game1.h2.milesLivedata.observe(viewLifecycleOwner, Observer { newMiles ->
+            binding.progressBar2.progress = newMiles
+        })
+
+        viewModel.game1.h3.milesLivedata.observe(viewLifecycleOwner, Observer { newMiles ->
+            binding.progressBar3.progress = newMiles
+        })
+
+        viewModel.game1.h4.milesLivedata.observe(viewLifecycleOwner, Observer { newMiles ->
+            binding.progressBar4.progress = newMiles
+        })
+
+
         viewModel.h1Ratio.observe(viewLifecycleOwner, Observer { newScore ->
             binding.tvH1Ratio.text = String.format("%.1f", newScore) })
         viewModel.h2Ratio.observe(viewLifecycleOwner, Observer { newScore ->

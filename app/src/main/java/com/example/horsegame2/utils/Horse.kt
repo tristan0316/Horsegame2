@@ -1,5 +1,6 @@
 package com.example.horsegame2.utils
 
+import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -9,6 +10,7 @@ class Horse(horsename: String = "", hRatio: Double)  {
     var mile: Int = 0
     var len: Long = 0
     var horsename: String = ""
+    var milesLivedata = MutableLiveData<Int>()
 
     init {
         this.ratio = 2.0
@@ -32,11 +34,12 @@ class Horse(horsename: String = "", hRatio: Double)  {
         this.len = 0
 
         var start: Long = System.currentTimeMillis()
-        while (mile < 3) {
+        while (mile < 20) {
             Thread.sleep((0..2000).random().toLong())
             CoroutineScope(Dispatchers.Main).launch {
                 mile = (mile)?.plus(1)
                 println("${horsename} ran ${mile} miles")
+                milesLivedata.value = mile
             }
         }
         len = System.currentTimeMillis()
