@@ -1,5 +1,6 @@
 package com.example.horsegame2
 
+import MyAPIService
 import android.app.Application
 import android.util.Log
 import android.widget.RadioButton
@@ -11,6 +12,7 @@ import com.example.horsegame.database.AppDatabase
 import com.example.horsegame.database.HorseBet
 import com.example.horsegame.database.HorseBetDao
 import com.example.horsegame.utils.Game
+import com.example.horsegame2.jaon.Currency
 import com.example.horsegame2.utils.GameListener
 import com.example.horsegame2.utils.Horse
 import kotlinx.coroutines.CoroutineScope
@@ -23,6 +25,14 @@ import java.text.DecimalFormat
 
 
 class GameViewModel(val database:HorseBetDao, application: Application) : AndroidViewModel(application), GameListener {
+
+
+
+    var progress1 = MutableLiveData<Int>()
+    var progress2 = MutableLiveData<Int>()
+    var progress3 = MutableLiveData<Int>()
+    var progress4 = MutableLiveData<Int>()
+
 
     //horse ratio
     var h1Ratio = MutableLiveData<Double>()
@@ -54,6 +64,29 @@ class GameViewModel(val database:HorseBetDao, application: Application) : Androi
 
 
 
+    fun fetch_exchangeRate(){
+        CoroutineScope(Dispatchers.IO).launch {
+
+            //PS: Import right packages in this class (EX: Many packages have Callback class)
+            val apiService = RetrofitManager.client.create(MyAPIService::class.java)
+            apiService.getExchangeRate().enqueue(object: Callback<Currency>{
+                override fun onResponse(call: Call<Currency>, response: Response<Currency>) {
+
+                    //PS: Update LiveData in the Main thread
+                    CoroutineScope(Dispatchers.Main).launch {
+                       exrate.value = response.body()!!.USDTWD!!.Exrate
+                        Log.v("Game", "Network access successfully")
+                    }
+                }
+                override fun onFailure(call: Call<Currency>, t: Throwable) {
+                    Log.v("Game", "Network access failed")
+                }
+            })
+        }
+    }
+
+
+
 
     init {
         h1Ratio.value = 2.0
@@ -68,6 +101,8 @@ class GameViewModel(val database:HorseBetDao, application: Application) : Androi
         var h4 = h4Ratio.value?.let { Horse("H4", it) }
 
         game1 = Game(this, h1!!, h2!!, h3!!, h4!!)
+
+        fetch_exchangeRate()
 
     }
 
@@ -96,15 +131,20 @@ class GameViewModel(val database:HorseBetDao, application: Application) : Androi
    fun calculate_result(){
        if( bethorsename.equals(game1.win_horse().horsename)){
 
-           //balance.value= balance.value?.plus(betmoney*game1.win_horse().ratio* exrate.value!!)
+
+           Log.e("Kenny","insert succeed"+ exrate.value.toString())
+
+           balance.value= balance.value?.plus(betmoney*game1.win_horse().ratio* exrate.value!!)
 
 
-          balance.value= betmoney?.times(game1.win_horse().ratio)?.let { balance.value?.plus(it) }
+          //balance.value= betmoney?.times(game1.win_horse().ratio)?.let { balance.value?.plus(it) }
        }
        else{
 
-          // balance.value= balance.value?.minus(betmoney* exrate.value!!)
-           balance.value= betmoney?.let { balance.value?.minus(it) }
+           Log.e("Kenny","insert succeed"+ exrate.value.toString())
+
+           balance.value= balance.value?.minus(betmoney* exrate.value!!)
+         // balance.value= betmoney?.let { balance.value?.minus(it) }
        }
    }
 
